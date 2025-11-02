@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0f9d58">
+    <meta name="description" content="Track your grocery inventory with ease">
+    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIkdyb2NlcnkgSW52ZW50b3J5IFRyYWNrZXIiLAogICJzaG9ydF9uYW1lIjogIkdyb2NlcnkgVHJhY2tlciIsCiAgImRlc2NyaXB0aW9uIjogIlRyYWNrIHlvdXIgZ3JvY2VyeSBpbnZlbnRvcnkgYW5kIG5ldmVyIHJ1biBvdXQgb2YgZXNzZW50aWFscyIsCiAgInN0YXJ0X3VybCI6ICIuLyIsCiAgImRpc3BsYXkiOiAic3RhbmRhbG9uZSIsCiAgImJhY2tncm91bmRfY29sb3IiOiAiI2Y4ZjlmYSIsCiAgInRoZW1lX2NvbG9yIjogIiMwZjlkNTgiLAogICJpY29ucyI6IFsKICAgIHsKICAgICAgInNyYyI6ICJkYXRhOmltYWdlL3N2Zyt4bWwsJTNDc3ZnIHhtbG5zPSdodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2Zycgdmlld0JveD0nMCAwIDEwMCAxMDAnJTNFJTNDcmVjdCBmaWxsPSclMjMwZjlkNTgnIHdpZHRoPScxMDAnIGhlaWdodD0nMTAwJy8lM0UlM0N0ZXh0IHg9JzUwJyB5PSc2NScgZm9udC1zaXplPSc1MCcgdGV4dC1hbmNob3I9J21pZGRsZSclM0UlRjAlOUYlOUIlOTIlM0MvdGV4dCUzRSUzQy9zdmclM0UiLAogICAgICAic2l6ZXMiOiAiMTkyeDE5MiIsCiAgICAgICJ0eXBlIjogImltYWdlL3N2Zyt4bWwiCiAgICB9LAogICAgewogICAgICAic3JjIjogImRhdGE6aW1hZ2Uvc3ZnK3htbCwlM0NzdmcgeG1sbnM9J2h0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnJyB2aWV3Qm94PScwIDAgMTAwIDEwMCclM0UlM0NyZWN0IGZpbGw9JyUyMzBmOWQ1OCcgd2lkdGg9JzEwMCcgaGVpZ2h0PScxMDAnLyUzRSUzQ3RleHQgeD0nNTAnIHk9JzY1JyBmb250LXNpemU9JzUwJyB0ZXh0LWFuY2hvcj0nbWlkZGxlJyUzRSVGMCU5RiU5QiU5MiUzQy90ZXh0JTNFJTNDL3N2ZyUzRSIsCiAgICAgICJzaXplcyI6ICI1MTJ4NTEyIiwKICAgICAgInR5cGUiOiAiaW1hZ2Uvc3ZnK3htbCIKICAgIH0KICBdCn0=">
+    <title>Grocery Inventory Tracker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            padding: 20px;
+            transition: background-color 0.3s ease;
+        }
+        
+        body.dark-mode {
+            background-color: #1a1a1a;
+            color: #e8eaed;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        body.dark-mode .container {
+            background: #2d2d2d;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+        }
+        
+        .header {
+            background: #0f9d58;
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        body.dark-mode .header {
+            background: #0d7d45;
+        }
+        
+        .header-content {
+            flex: 1;
+            text-align: center;
+        }
+        
+        .dark-mode-toggle {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: 10px 18px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.3s ease;
+            white-space: nowrap;
+            font-weight: 500;
+        }
+        
+        .dark-mode-toggle:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        
+        h1 {
+            font-size: 24px;
+            font-weight: normal;
+        }
+        
+        .sheet {
+            overflow-x: auto;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th {
+            background: #f1f3f4;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid #dadce0;
+            position: sticky;
+            top: 0;
+            transition: background-color 0.3s ease;
+        }
+        
+        body.dark-mode th {
+            background: #3a3a3a;
+            border-bottom-color: #555;
+            color: #e8eaed;
+        }
+        
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #e8eaed;
+            transition: border-color 0.3s ease;
+        }
+        
+        body.dark-mode td {
+            border-bottom-color: #444;
+        }
+        
+        tr:hover {
+            background-color: #f8f9fa;
+            transition: background-color 0.2s ease;
+        }
+        
+        body.dark-mode tr:hover {
+            background-color: #383838;
+        }
+        
+        .item-name {
+            font-weight: 500;
+        }
+        
+        .radio-group {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        input[type="radio"] {
+            cursor: pointer;
+            width: 18px;
+            height: 18px;
+        }
+        
+        label {
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .status-have {
+            color: #0f9d58;
+        }
+        
+        .status-low {
+            color: #f4b400;
+        }
+        
+        .status-out {
+            color: #db4437;
+        }
+        
+        .category-header {
+            background: #e8f0fe;
+            font-weight: 600;
+            color: #1967d2;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        
+        body.dark-mode .category-header {
+            background: #1a3a52;
+            color: #8ab4f8;
+        }
+        
+        .add-item {
+            padding: 20px;
+            border-top: 2px solid #dadce0;
+            transition: border-color 0.3s ease;
+        }
+        
+        body.dark-mode .add-item {
+            border-top-color: #555;
+        }
+        
+        .add-item input {
+            padding: 10px;
+            border: 1px solid #dadce0;
+            border-radius: 4px;
+            width: 300px;
+            margin-right: 10px;
+            transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+        }
+        
+        body.dark-mode .add-item input {
+            background: #3a3a3a;
+            border-color: #555;
+            color: #e8eaed;
+        }
+        
+        body.dark-mode .add-item input::placeholder {
+            color: #999;
+        }
+        
+        .add-item button {
+            padding: 10px 20px;
+            background: #0f9d58;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        
+        .add-item button:hover {
+            background: #0d8a4d;
+        }
+        
+        .clear-btn {
+            padding: 4px 12px;
+            background: #f1f3f4;
+            color: #5f6368;
+            border: 1px solid #dadce0;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            margin-left: 10px;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+        
+        .clear-btn:hover {
+            background: #e8eaed;
+            border-color: #5f6368;
+        }
+        
+        body.dark-mode .clear-btn {
+            background: #3a3a3a;
+            color: #e8eaed;
+            border-color: #555;
+        }
+        
+        body.dark-mode .clear-btn:hover {
+            background: #4a4a4a;
+            border-color: #777;
+        }
+        
+        .backup-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #dadce0;
+        }
+        
+        body.dark-mode .backup-buttons {
+            border-top-color: #555;
+        }
+        
+        .backup-btn {
+            padding: 8px 16px;
+            background: #1967d2;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: background 0.3s ease;
+        }
+        
+        .backup-btn:hover {
+            background: #1557b0;
+        }
+        
+        .backup-btn.secondary {
+            background: #5f6368;
+        }
+        
+        .backup-btn.secondary:hover {
+            background: #4a4d52;
+        }
+        
+        #importFile {
+            display: none;
+        }
+        
+        .webhook-settings {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            border: 1px solid #dadce0;
+        }
+        
+        body.dark-mode .webhook-settings {
+            background: #2a2a2a;
+            border-color: #555;
+        }
+        
+        .webhook-settings h3 {
+            margin: 0 0 10px 0;
+            font-size: 16px;
+            color: #1967d2;
+        }
+        
+        body.dark-mode .webhook-settings h3 {
+            color: #8ab4f8;
+        }
+        
+        .webhook-settings input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #dadce0;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        
+        body.dark-mode .webhook-settings input {
+            background: #3a3a3a;
+            border-color: #555;
+            color: #e8eaed;
+        }
+        
+        .webhook-settings button {
+            padding: 8px 16px;
+            background: #1967d2;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-right: 10px;
+        }
+        
+        .webhook-settings button:hover {
+            background: #1557b0;
+        }
+        
+        .webhook-status {
+            margin-top: 10px;
+            padding: 8px;
+            border-radius: 4px;
+            font-size: 13px;
+            display: none;
+        }
+        
+        .webhook-status.success {
+            background: #e6f4ea;
+            color: #137333;
+            display: block;
+        }
+        
+        .webhook-status.error {
+            background: #fce8e6;
+            color: #c5221f;
+            display: block;
+        }
+        
+        body.dark-mode .webhook-status.success {
+            background: #1e3a2e;
+            color: #81c995;
+        }
+        
+        body.dark-mode .webhook-status.error {
+            background: #3a2020;
+            color: #f28b82;
+        }
+        
+        .webhook-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .toggle-switch {
+            position: relative;
+            width: 50px;
+            height: 24px;
+            background: #dadce0;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .toggle-switch.active {
+            background: #0f9d58;
+        }
+        
+        .toggle-slider {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.3s;
+        }
+        
+        .toggle-switch.active .toggle-slider {
+            transform: translateX(26px);
+        }
+        
+        .install-prompt {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #0f9d58;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            display: none;
+            align-items: center;
+            gap: 15px;
+            z-index: 1000;
+            animation: slideUp 0.3s ease;
+        }
+        
+        @keyframes slideUp {
+            from {
+                transform: translateX(-50%) translateY(100px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(-50%) translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        .install-prompt button {
+            background: white;
+            color: #0f9d58;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        .install-prompt button:hover {
+            background: #f1f3f4;
+        }
+        
+        .install-prompt .close-btn {
+            background: transparent;
+            color: white;
+            padding: 5px 10px;
+            font-size: 18px;
+        }
+        
+        .install-prompt .close-btn:hover {
+            background: rgba(255,255,255,0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div style="width: 120px;"></div>
+            <div class="header-content">
+                <h1>🛒 Grocery Inventory Tracker</h1>
+            </div>
+            <button class="dark-mode-toggle" onclick="toggleDarkMode()" aria-label="Toggle dark mode">
+                <span id="modeIcon">🌙</span>
+                <span id="modeText">Dark Mode</span>
+            </button>
+        </div>
+        
+        <div class="sheet">
+            <table id="groceryTable">
+                <thead>
+                    <tr>
+                        <th style="width: 40%">Item</th>
+                        <th style="width: 60%">Status</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="add-item">
+            <input type="text" id="newItem" placeholder="Add new item..." onkeypress="if(event.key==='Enter') addItem()">
+            <button onclick="addItem()">Add Item</button>
+            
+            <div class="backup-buttons">
+                <button class="backup-btn" onclick="exportData()">📥 Export Backup</button>
+                <button class="backup-btn secondary" onclick="document.getElementById('importFile').click()">📤 Import Backup</button>
+                <input type="file" id="importFile" accept=".json" onchange="importData(event)">
+            </div>
+            
+            <div class="webhook-settings">
+                <h3>⚡ n8n Webhook Integration</h3>
+                <div class="webhook-toggle">
+                    <div class="toggle-switch" id="webhookToggle" onclick="toggleWebhook()">
+                        <div class="toggle-slider"></div>
+                    </div>
+                    <span>Enable n8n Webhooks</span>
+                </div>
+                <input type="url" id="webhookUrl" placeholder="https://your-n8n-instance.com/webhook/grocery-tracker" onchange="saveWebhookUrl()">
+                <button onclick="testWebhook()">Test Connection</button>
+                <button onclick="sendFullInventory()" style="background: #5f6368;">Send Full Inventory</button>
+                <div class="webhook-status" id="webhookStatus"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const groceryItems = {
+            "Produce": [
+                "Apples", "Bananas", "Oranges", "Lettuce", "Tomatoes", 
+                "Carrots", "Onions", "Potatoes", "Garlic", "Bell Peppers"
+            ],
+            "Dairy & Eggs": [
+                "Milk", "Eggs", "Butter", "Cheese", "Yogurt", "Cream Cheese"
+            ],
+            "Meat & Seafood": [
+                "Chicken Breast", "Ground Beef", "Salmon", "Bacon", "Deli Meat"
+            ],
+            "Pantry": [
+                "Bread", "Rice", "Pasta", "Flour", "Sugar", "Salt", 
+                "Olive Oil", "Vegetable Oil", "Canned Tomatoes", "Beans"
+            ],
+            "Frozen": [
+                "Frozen Vegetables", "Ice Cream", "Frozen Pizza"
+            ],
+            "Beverages": [
+                "Coffee", "Tea", "Juice", "Soda", "Water Bottles"
+            ],
+            "Household": [
+                "Paper Towels", "Toilet Paper", "Dish Soap", "Laundry Detergent", "Trash Bags"
+            ]
+        };
+
+        // Category keywords for auto-categorization
+        const categoryKeywords = {
+            "Produce": ["apple", "banana", "orange", "lettuce", "tomato", "carrot", "onion", "potato", "garlic", "pepper", "spinach", "broccoli", "cucumber", "celery", "mushroom", "avocado", "lemon", "lime", "grape", "strawberry", "blueberry", "raspberry", "melon", "watermelon", "pineapple", "mango", "peach", "pear", "plum", "cherry", "kale", "cabbage", "squash", "zucchini", "eggplant", "radish", "beet", "turnip", "parsnip", "leek", "scallion", "shallot", "ginger", "herb", "cilantro", "parsley", "basil", "mint", "arugula", "chard"],
+            "Dairy & Eggs": ["milk", "egg", "butter", "cheese", "yogurt", "cream", "sour cream", "cottage cheese", "mozzarella", "cheddar", "parmesan", "feta", "goat cheese", "brie", "half and half", "whipping cream", "buttermilk"],
+            "Meat & Seafood": ["chicken", "beef", "pork", "turkey", "lamb", "salmon", "tuna", "shrimp", "fish", "bacon", "sausage", "ham", "steak", "ground beef", "ground turkey", "ribs", "roast", "deli meat", "hot dog", "brisket", "cod", "tilapia", "trout", "crab", "lobster", "scallop", "clam", "mussel"],
+            "Pantry": ["bread", "rice", "pasta", "flour", "sugar", "salt", "pepper", "oil", "olive oil", "vegetable oil", "vinegar", "sauce", "ketchup", "mustard", "mayo", "mayonnaise", "cereal", "oatmeal", "granola", "crackers", "chips", "cookie", "snack", "nut", "peanut", "almond", "cashew", "walnut", "can", "canned", "bean", "soup", "broth", "stock", "spice", "seasoning", "honey", "syrup", "jam", "jelly", "peanut butter", "pickles", "salsa"],
+            "Frozen": ["frozen", "ice cream", "pizza", "waffle", "bagel", "fries", "nugget", "burrito", "dinner", "popsicle", "sorbet"],
+            "Beverages": ["coffee", "tea", "juice", "soda", "pop", "water", "milk", "beer", "wine", "liquor", "energy drink", "sports drink", "lemonade", "sparkling"],
+            "Household": ["paper towel", "toilet paper", "tissue", "napkin", "dish soap", "detergent", "laundry", "bleach", "cleaner", "sponge", "trash bag", "garbage bag", "aluminum foil", "plastic wrap", "sandwich bag", "ziplock", "soap", "shampoo", "conditioner", "toothpaste", "deodorant", "razor"]
+        };
+
+        let inventory = {};
+        let customItems = {};
+        let webhookEnabled = false;
+        let webhookUrl = '';
+
+        // Load saved data from browser storage
+        function loadData() {
+            const savedInventory = localStorage.getItem('groceryInventory');
+            const savedCustomItems = localStorage.getItem('customGroceryItems');
+            
+            if (savedInventory) {
+                inventory = JSON.parse(savedInventory);
+            }
+            
+            if (savedCustomItems) {
+                customItems = JSON.parse(savedCustomItems);
+            }
+            
+            // Load webhook settings
+            webhookEnabled = localStorage.getItem('webhookEnabled') === 'true';
+            webhookUrl = localStorage.getItem('webhookUrl') || '';
+            
+            // Update UI
+            if (webhookEnabled) {
+                document.getElementById('webhookToggle').classList.add('active');
+            }
+            if (webhookUrl) {
+                document.getElementById('webhookUrl').value = webhookUrl;
+            }
+        }
+
+        // Save data to browser storage
+        function saveData() {
+            localStorage.setItem('groceryInventory', JSON.stringify(inventory));
+            localStorage.setItem('customGroceryItems', JSON.stringify(customItems));
+        }
+        
+        // Categorize item based on keywords
+        function categorizeItem(itemName) {
+            const lowerItem = itemName.toLowerCase();
+            
+            for (const [category, keywords] of Object.entries(categoryKeywords)) {
+                for (const keyword of keywords) {
+                    if (lowerItem.includes(keyword)) {
+                        return category;
+                    }
+                }
+            }
+            
+            return "Custom Items";
+        }
+
+        function initializeTable() {
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = ''; // Clear existing content
+            
+            for (const [category, items] of Object.entries(groceryItems)) {
+                const categoryRow = document.createElement('tr');
+                categoryRow.innerHTML = `<td colspan="2" class="category-header">${category}</td>`;
+                tbody.appendChild(categoryRow);
+                
+                items.forEach(item => {
+                    const row = createItemRow(item);
+                    tbody.appendChild(row);
+                });
+                
+                // Add custom items for this category
+                if (customItems[category]) {
+                    customItems[category].forEach(item => {
+                        const row = createItemRow(item);
+                        tbody.appendChild(row);
+                    });
+                }
+            }
+            
+            // Add uncategorized custom items
+            if (customItems["Custom Items"] && customItems["Custom Items"].length > 0) {
+                const categoryRow = document.createElement('tr');
+                categoryRow.innerHTML = `<td colspan="2" class="category-header">Custom Items</td>`;
+                tbody.appendChild(categoryRow);
+                
+                customItems["Custom Items"].forEach(item => {
+                    const row = createItemRow(item);
+                    tbody.appendChild(row);
+                });
+            }
+            
+            // Restore saved selections
+            restoreSelections();
+        }
+
+        function restoreSelections() {
+            for (const [item, status] of Object.entries(inventory)) {
+                const itemId = item.replace(/\s+/g, '-').toLowerCase();
+                const radio = document.getElementById(`${itemId}-${status}`);
+                if (radio) {
+                    radio.checked = true;
+                }
+            }
+        }
+
+        function createItemRow(itemName) {
+            const row = document.createElement('tr');
+            const itemId = itemName.replace(/\s+/g, '-').toLowerCase();
+            
+            row.innerHTML = `
+                <td class="item-name">${itemName}</td>
+                <td>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" id="${itemId}-have" name="${itemId}" value="have" onchange="updateStatus('${itemName}', 'have')">
+                            <label for="${itemId}-have" class="status-have">✓ Have</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="${itemId}-low" name="${itemId}" value="low" onchange="updateStatus('${itemName}', 'low')">
+                            <label for="${itemId}-low" class="status-low">⚠ Getting Low</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="${itemId}-out" name="${itemId}" value="out" onchange="updateStatus('${itemName}', 'out')">
+                            <label for="${itemId}-out" class="status-out">✗ Out</label>
+                        </div>
+                        <button class="clear-btn" onclick="clearStatus('${itemName}', '${itemId}')">Clear</button>
+                    </div>
+                </td>
+            `;
+            
+            return row;
+        }
+
+        function updateStatus(item, status) {
+            const previousStatus = inventory[item];
+            inventory[item] = status;
+            saveData();
+            console.log(`${item}: ${status}`);
+            
+            // Send webhook if enabled
+            if (webhookEnabled && webhookUrl) {
+                sendWebhook({
+                    event: 'status_changed',
+                    item: item,
+                    newStatus: status,
+                    previousStatus: previousStatus || 'none',
+                    timestamp: new Date().toISOString()
+                });
+            }
+        }
+        
+        function clearStatus(itemName, itemId) {
+            // Remove from inventory
+            delete inventory[itemName];
+            saveData();
+            
+            // Uncheck all radio buttons for this item
+            const radios = document.getElementsByName(itemId);
+            radios.forEach(radio => radio.checked = false);
+        }
+
+        function addItem() {
+            const input = document.getElementById('newItem');
+            const itemName = input.value.trim();
+            
+            if (itemName) {
+                // Determine category
+                const category = categorizeItem(itemName);
+                
+                // Initialize category array if needed
+                if (!customItems[category]) {
+                    customItems[category] = [];
+                }
+                
+                // Add item to category
+                customItems[category].push(itemName);
+                saveData();
+                
+                // Refresh the entire table to show item in correct category
+                initializeTable();
+                
+                input.value = '';
+                
+                // Send webhook if enabled
+                if (webhookEnabled && webhookUrl) {
+                    sendWebhook({
+                        event: 'item_added',
+                        item: itemName,
+                        category: category,
+                        timestamp: new Date().toISOString()
+                    });
+                }
+            }
+        }
+
+        // Initialize
+        loadData();
+        initializeTable();
+        loadDarkMode();
+        
+        // Export and Import functions
+        function exportData() {
+            const data = {
+                inventory: inventory,
+                customItems: customItems,
+                exportDate: new Date().toISOString(),
+                version: '1.0'
+            };
+            
+            const dataStr = JSON.stringify(data, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `grocery-tracker-backup-${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+            
+            alert('✅ Backup exported successfully!');
+        }
+        
+        function importData(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    
+                    // Validate the data structure
+                    if (data.inventory && data.customItems) {
+                        inventory = data.inventory;
+                        customItems = data.customItems;
+                        saveData();
+                        initializeTable();
+                        alert('✅ Backup imported successfully!');
+                    } else {
+                        alert('❌ Invalid backup file format.');
+                    }
+                } catch (error) {
+                    alert('❌ Error reading backup file. Please make sure it\'s a valid grocery tracker backup.');
+                }
+            };
+            reader.readAsText(file);
+            
+            // Reset file input
+            event.target.value = '';
+        }
+        
+        // Webhook functions
+        function toggleWebhook() {
+            webhookEnabled = !webhookEnabled;
+            localStorage.setItem('webhookEnabled', webhookEnabled);
+            
+            const toggle = document.getElementById('webhookToggle');
+            if (webhookEnabled) {
+                toggle.classList.add('active');
+            } else {
+                toggle.classList.remove('active');
+            }
+        }
+        
+        function saveWebhookUrl() {
+            webhookUrl = document.getElementById('webhookUrl').value.trim();
+            localStorage.setItem('webhookUrl', webhookUrl);
+        }
+        
+        async function sendWebhook(data) {
+            if (!webhookUrl) return;
+            
+            try {
+                const response = await fetch(webhookUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                if (!response.ok) {
+                    console.error('Webhook failed:', response.status);
+                }
+            } catch (error) {
+                console.error('Webhook error:', error);
+            }
+        }
+        
+        async function testWebhook() {
+            saveWebhookUrl();
+            const statusDiv = document.getElementById('webhookStatus');
+            
+            if (!webhookUrl) {
+                statusDiv.className = 'webhook-status error';
+                statusDiv.textContent = '❌ Please enter a webhook URL first';
+                return;
+            }
+            
+            statusDiv.className = 'webhook-status';
+            statusDiv.textContent = '⏳ Testing connection...';
+            statusDiv.style.display = 'block';
+            
+            try {
+                const response = await fetch(webhookUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        event: 'test',
+                        message: 'Test connection from Grocery Tracker',
+                        timestamp: new Date().toISOString()
+                    })
+                });
+                
+                if (response.ok) {
+                    statusDiv.className = 'webhook-status success';
+                    statusDiv.textContent = '✅ Connection successful! n8n webhook is working.';
+                } else {
+                    statusDiv.className = 'webhook-status error';
+                    statusDiv.textContent = `❌ Connection failed: ${response.status} ${response.statusText}`;
+                }
+            } catch (error) {
+                statusDiv.className = 'webhook-status error';
+                statusDiv.textContent = `❌ Connection error: ${error.message}`;
+            }
+        }
+        
+        async function sendFullInventory() {
+            saveWebhookUrl();
+            const statusDiv = document.getElementById('webhookStatus');
+            
+            if (!webhookUrl) {
+                statusDiv.className = 'webhook-status error';
+                statusDiv.textContent = '❌ Please enter a webhook URL first';
+                return;
+            }
+            
+            statusDiv.className = 'webhook-status';
+            statusDiv.textContent = '⏳ Sending full inventory...';
+            statusDiv.style.display = 'block';
+            
+            // Get items by status
+            const outItems = [];
+            const lowItems = [];
+            const haveItems = [];
+            
+            for (const [item, status] of Object.entries(inventory)) {
+                if (status === 'out') outItems.push(item);
+                else if (status === 'low') lowItems.push(item);
+                else if (status === 'have') haveItems.push(item);
+            }
+            
+            try {
+                const response = await fetch(webhookUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        event: 'full_inventory',
+                        inventory: inventory,
+                        summary: {
+                            out: outItems,
+                            low: lowItems,
+                            have: haveItems,
+                            totalItems: Object.keys(inventory).length
+                        },
+                        timestamp: new Date().toISOString()
+                    })
+                });
+                
+                if (response.ok) {
+                    statusDiv.className = 'webhook-status success';
+                    statusDiv.textContent = `✅ Full inventory sent! (${Object.keys(inventory).length} items)`;
+                } else {
+                    statusDiv.className = 'webhook-status error';
+                    statusDiv.textContent = `❌ Failed to send: ${response.status} ${response.statusText}`;
+                }
+            } catch (error) {
+                statusDiv.className = 'webhook-status error';
+                statusDiv.textContent = `❌ Error: ${error.message}`;
+            }
+        }
+        
+        // Dark mode functions
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            localStorage.setItem('darkMode', isDark);
+            updateDarkModeButton(isDark);
+        }
+        
+        function loadDarkMode() {
+            const isDark = localStorage.getItem('darkMode') === 'true';
+            if (isDark) {
+                document.body.classList.add('dark-mode');
+            }
+            updateDarkModeButton(isDark);
+        }
+        
+        function updateDarkModeButton(isDark) {
+            const icon = document.getElementById('modeIcon');
+            const text = document.getElementById('modeText');
+            if (isDark) {
+                icon.textContent = '☀️';
+                text.textContent = 'Light Mode';
+            } else {
+                icon.textContent = '🌙';
+                text.textContent = 'Dark Mode';
+            }
+        }
+    </script>
+</body>
+</html>
